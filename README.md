@@ -1,4 +1,4 @@
-# invoice_generator
+# Invoice Generator
 Yet another tool to track service delivery.
 
 As a freelance I was needed a tool to track my service delivery.
