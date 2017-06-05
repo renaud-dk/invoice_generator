@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{super()}}
+<link href="{{ url_for('static', filename='css/foundation-datepicker.min.css') }}" rel='stylesheet' />
+<link href="{{ url_for('static', filename='css/wickedpicker.min.css') }}" rel='stylesheet' />
+<style>
+    div.content {
+        padding: 25px 0px 0px 0px;
+    }
+</style>
+{% endblock styles %}
+{% block content %}
+    <div class="row content">
+        <div class="large-12 columns">
+            <h2>{{title}}</h2>
+        </div>
+    </div>
+    <form id="prestaform" data-abide novalidate action="" method="post" name="new presta">
+        {{ presta.hidden_tag() }}
+        <div class="row">
+            <div class="large-6 columns">
+                {{presta.project.label}}
+                {{presta.project}}
+
+                {{presta.date.label}}
+                {{presta.date}}
+                <span class="form-error">
+                    Date is required
+                </span>
+
+                {{presta.duration.label}}
+                {{presta.duration}}
+                <span class="form-error">
+                    Duration is required
+                </span>
+
+                {{presta.comment.label}}
+                {{presta.comment}}
+                <span class="form-error">
+                    Comment is required
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="large-12 columns">
+                {% if presta.add %}
+                <button id="prestaSave" type="submit" class="button">Add</button>
+                {% else %}
+                <button id="prestaUpdate" type="submit" class="button warning">Update</button>
+                {% endif %}
+                <button class="button alert" href="/index">Cancel</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block footer_scripts %}
+{{super()}}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/foundation-datepicker.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/wickedpicker.js') }}"></script>
+    <script type=text/javascript>
+        $(document).ready(function() {
+            $('#date').fdatepicker({
+                format: 'dd/mm/yyyy hh:ii',
+                weekStart: 1,
+                disableDblClickSelection: true,
+                leftArrow:'<<',
+                rightArrow:'>>',
+                pickTime: true
+            });
+
+            $('#duration').wickedpicker({
+                title: 'Presta duration',
+                now: "01:00",
+                twentyFour: true,
+                minutesInterval: 15
+            });
+        });
+    </script>
+{% endblock footer_scripts %}

@@ -1,0 +1,57 @@
+#-*- coding: utf-8 -*-
+__author__ = 'rdk'
+
+from flask_wtf import Form
+from wtforms import StringField, BooleanField, IntegerField, SelectField, TextAreaField
+from wtforms.validators import DataRequired
+
+class LoginForm(Form):
+    openid = StringField('openid', validators=[DataRequired()])
+    remember_me = BooleanField('remember_me', default=False)
+
+class CustomerForm(Form):
+    name = StringField('Name', validators=[DataRequired()],
+                       render_kw={"placeholder": "Customer name", "required": "true"})
+    address = StringField('Address', render_kw={"placeholder": "Customer Address"})
+    city = StringField('City', render_kw={"placeholder": "Customer City"})
+    zip_code = IntegerField('Zip code', render_kw={"placeholder": "Customer Zip code"})
+    country = StringField('Country', render_kw={"placeholder": "Customer Country"})
+    vat = StringField('VAT', validators=[DataRequired()],
+                      render_kw={"placeholder": "Customer VAT", "required": "true"})
+
+class ProjectForm(Form):
+    customer = SelectField('Customer', coerce=int, validators=[DataRequired()])
+    code = StringField(u'Project Code', validators=[DataRequired()],
+                       render_kw={"placeholder" : "Project Code", "required" : "true"})
+    description = StringField(u'Project Description', validators=[DataRequired()],
+                              render_kw={"placeholder" : "Project Description", "required" : "true"})
+
+class PrestaFrom(Form):
+    id = IntegerField('Presta Id', id="prestaid", render_kw={"type":"hidden"})
+    project = SelectField('Project', coerce=int, validators=[DataRequired()], render_kw={"required":"true"})
+    date = StringField('Date', validators=[DataRequired()],
+                     render_kw={"class":"span2", "placeholder": "Presta start date and time", "required": "true"})
+    duration = StringField('Duration', validators=[DataRequired()],
+                             render_kw={"class": "timepicker", "required": "true"})
+    comment = TextAreaField('Comment', validators=[DataRequired()],
+                            render_kw={"placeholder": "Presta comment", "required": "true"})
+
+class UploadForm(Form):
+    filetype = SelectField('Filetype', coerce=int, validators=[DataRequired()])
+
+    # TODO used FileFiedl instead of StringField
+    filename = StringField('Select file', validators=[DataRequired()],
+                           render_kw={"class":"show-for-sr", "type":"file", "accept":".csv",
+                                      "required": "true"})
+
+class InvoiceForm(Form):
+    customer = SelectField('Customer', coerce=int, validators=[DataRequired()])
+    date_from = StringField('Date From', validators=[DataRequired()],
+                       render_kw={"class": "span2", "placeholder": "Date from", "required": "true"})
+    date_to = StringField('Date To', validators=[DataRequired()],
+                            render_kw={"class": "span2", "placeholder": "Date to", "required": "true"})
+
+    is_official = BooleanField('Increment invoice number')
+
+
+

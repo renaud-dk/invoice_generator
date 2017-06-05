@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <title>timesheet.html</title>
+    <style type="text/css">
+        table.timesheet {
+            font-family: Helvetica,Arial,sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table.timesheet td, table.timesheet th {
+          border: 1px solid #999;
+          padding: 0.5rem;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+          border-right: 0px;
+          border-left: 0px;
+          border-top: 0px;
+        }
+
+        table.timesheet th {
+            background-color: #333f50;
+            color: white;
+        }
+
+        table.timesheet tr:nth-child(odd) {
+            background-color: white;
+        }
+
+        table.timesheet tr:nth-child(even) {
+            background-color: #eee;
+        }
+
+    </style>
+  </head>
+  <body>
+    <table class="timesheet">
+        <thead>
+            <tr>
+              <th>Projet</th>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Presta</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in prestas %}
+            <tr>
+                <td>{{p.project}}</td>
+                <td>{{p.date.strftime('%d/%m/%Y')}}</td>
+                <td>{{p.description}}</td>
+                <td>{{p.hours}}</td>
+            </tr>
+            {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

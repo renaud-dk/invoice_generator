@@ -1,0 +1,66 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+{% block head %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}
+    <title>Invoice Generator</title>
+    {% endblock title %}
+    {% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <style>
+        .vertical {
+            z-index: 200;
+        }
+    </style>
+    {% endblock styles %}
+    {% block head_script %}
+    {% endblock head_script %}
+</head>
+{% endblock head %}
+{% block body %}
+<body>
+    {% block navbar %}
+    <div class="top-bar">
+        <ul class="dropdown menu" data-dropdown-menu>
+            <li class="menu-text"><a href="/index">Invoice Generator</a></li>
+            <li>
+                <a href="#">Menu</a>
+                <ul class="menu vertical">
+                    <li><a href="/admin/gen_invoice">Generate invoice</a></li>
+                    <li><a href="/upload">Upload</a></li>
+                    <li><a href="/project">Project</a></li>
+                    <li><a href="/customer">Customer</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    {% endblock navbar %}
+
+    {% with messages = get_flashed_messages() %}
+    <div class="row">
+        <div class="large-12 columns">
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }} </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+    {% endwith %}
+    {% block content %}
+    {% endblock content %}
+    {% block footer_scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/vendor/what-input.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/vendor/foundation.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% endblock footer_scripts %}
+</body>
+{% endblock body %}
+</html>

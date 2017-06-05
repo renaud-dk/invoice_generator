@@ -1,0 +1,44 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+{% block styles %}
+{{super()}}
+<style>
+    div.content {
+        padding: 25px 0px 0px 0px;
+    }
+</style>
+{% endblock styles %}
+{% block content %}
+    <div class="row content">
+        <div class="large-12 columns">
+            <h2>New Project</h2>
+        </div>
+    </div>
+    <form id="projectform" data-abide novalidate action="" method="post" name="new project">
+        {{ project.hidden_tag() }}
+        <div class="row">
+            <div class="small-6 columns">
+                {{project.customer.label}}
+                {{project.customer}}
+
+                {{project.code.label}}
+                {{project.code}}
+                <span class="form-error">
+                    Project code is required
+                </span>
+
+                {{project.description.label}}
+                {{project.description}}
+                <span class="form-error">
+                    Project description is required
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            <fieldset class="large-6 columns">
+                <button class="button" type="submit">Add Project</button>
+            </fieldset>
+        </div>
+    </form>
+{% endblock content %}

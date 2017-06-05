@@ -1,0 +1,59 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+{% block styles %}
+{{super()}}
+<style>
+    div.content {
+        padding: 25px 0px 0px 0px;
+    }
+</style>
+{% endblock styles %}
+{% block content %}
+    <div class="row content">
+        <div class="large-12 columns">
+            <h2>Upload file</h2>
+        </div>
+    </div>
+    <form id="upform" data-abide novalidate action="/upload" enctype="multipart/form-data" method="post">
+        {{ up.hidden_tag() }}
+        <div class="row">
+            <div class="large-4 columns">
+                {{up.filetype.label}}
+                {{up.filetype}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="large-2 columns">
+                {{up.filename.label(class_="button")}}
+                {{up.filename}}
+                <span class="form-error">
+                    A file is required
+                </span>
+            </div>
+            <div class="large-5 large-pull-5 columns">
+                <label id="filename_value" class="left inline">No file selected yet</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="large-12 columns">
+                <input class="button" type="submit" value="Upload">
+            </div>
+        </div>
+    </form>
+{% endblock content %}
+{% block footer_scripts %}
+    {{super()}}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            // Attach the change event listener to change the label of all input[type=file] elements
+            var els = document.querySelectorAll("input[type=file]"), i;
+
+            for (i = 0; i < els.length; i++) {
+              els[i].addEventListener("change", function() {
+                  document.getElementById('filename_value').innerHTML = this.files[0].name;
+              });
+            }
+        });
+    </script>
+{% endblock footer_scripts %}

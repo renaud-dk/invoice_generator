@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block styles %}
+{{super()}}
+    <link href="{{ url_for('static', filename='css/foundation-datepicker.min.css') }}" rel='stylesheet' />
+    <style>
+        div.content {
+            padding: 25px 0px 0px 0px;
+        }
+    </style>
+{% endblock styles %}
+
+{% block content %}
+    <div class="row content">
+        <div class="large-12 columns">
+            <h2>Generate invoice</h2>
+        </div>
+    </div>
+    <form id="projectform" data-abide novalidate action="" method="post">
+        {{ invoice.hidden_tag() }}
+        <div class="row">
+            <div class="small-6 columns">
+                {{invoice.customer.label}}
+                {{invoice.customer}}
+                <span class="form-error">
+                    Customer is required
+                </span>
+
+                {{invoice.date_from.label}}
+                {{invoice.date_from}}
+                <span class="form-error">
+                    A start date is required
+                </span>
+
+                {{invoice.date_to.label}}
+                {{invoice.date_to}}
+                <span class="form-error">
+                    An end date is required
+                </span>
+
+                {{invoice.is_official.label}}
+                {{invoice.is_official}}
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="large-6 columns">
+                <button class="button" type="submit">Generate Invoice</button>
+            </div>
+        </div>
+    </form>
+{% endblock content %}
+
+{% block footer_scripts %}
+{{super()}}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/foundation-datepicker.min.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#date_from').fdatepicker({
+                    format: 'dd/mm/yyyy',
+                    weekStart: 1,
+                    disableDblClickSelection: true,
+                    leftArrow:'<<',
+                    rightArrow:'>>',
+                    pickTime: false
+                });
+
+            $('#date_to').fdatepicker({
+                    format: 'dd/mm/yyyy',
+                    weekStart: 1,
+                    disableDblClickSelection: true,
+                    leftArrow:'<<',
+                    rightArrow:'>>',
+                    pickTime: false
+                });
+        });
+    </script>
+{% endblock footer_scripts %}
