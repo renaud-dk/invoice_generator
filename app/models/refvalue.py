@@ -10,4 +10,4 @@ class Refvalue(db.Model):
     refvalue = db.Column(db.String(64))
 
     def __repr__(self):
-        return '<Refvalue %r>' % (self.name)
+        return '<Refvalue %r - %r>' % (self.refname, self.refvalue)
