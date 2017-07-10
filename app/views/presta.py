@@ -46,6 +46,8 @@ def add_presta():
         duration = datetime.strptime(presta.duration.data.replace(' ', ''), TIME_FMT)
         new_presta.duration = timedelta(hours=duration.hour, minutes=duration.minute).seconds
         new_presta.description = presta.comment.data
+        new_presta.travel_distance = presta.travel_distance.data
+        new_presta.travel_comment = presta.travel_comment.data
 
         db.session.add(new_presta)
         db.session.commit()
@@ -69,6 +71,8 @@ def update_presta():
         duration = datetime.strptime(presta.duration.data.replace(' ', ''), TIME_FMT)
         p.duration = timedelta(hours=duration.hour, minutes=duration.minute).seconds
         p.description = presta.comment.data
+        p.travel_distance = presta.travel_distance.data
+        p.travel_comment = presta.travel_comment.data
 
         db.session.add(p)
         db.session.commit()
@@ -97,5 +101,6 @@ def get_presta_detail():
 
     if presta is not None:
         data = dict(Description=presta.description, Project=presta.project_id,
-                    Duration=("%02d : %02d" % (presta.duration / 3600, presta.duration % 3600)))
+                    Duration=("%02d : %02d" % (presta.duration / 3600, presta.duration % 3600)),
+                    Travel_Distance=presta.travel_distance, Travel_Comment=presta.travel_comment)
         return jsonify(data)
