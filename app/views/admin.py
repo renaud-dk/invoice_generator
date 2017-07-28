@@ -65,8 +65,8 @@ def gen_invoice():
         customer = p[0].project.customer
         invoice.date = to_date.strftime('%d/%m/%Y')
         invoice.number = Refvalue.query.filter(Refvalue.refname == REF_INVOICE_NUMBER).first().refvalue
-        presta_range.from_date = from_date.strftime('%d/%m/%Y')
-        presta_range.to_date = to_date.strftime('%d/%m/%Y')
+        presta_range.from_date = lst_presta[0].date.strftime('%d/%m/%Y')
+        presta_range.to_date = lst_presta[len(lst_presta) - 1].date.strftime('%d/%m/%Y')
         price.htva = round(daily_rate * work_days, 2)
         price.tva = round(price.htva * 0.21, 2)
         price.total = price.htva + price.tva
@@ -77,6 +77,12 @@ def gen_invoice():
             invoice_number = Refvalue.query.filter(Refvalue.refname == REF_INVOICE_NUMBER).first()
             invoice_number.refvalue = str(int(invoice_number.refvalue) + 1)
             db.session.add(invoice_number)
+
+            # udpate prestat with invoice number 
+            for i in p:
+                i.invoice_number = invoice_number.refvalue
+                db.session.add(i)
+
             db.session.commit()
 
         return render_pdf(HTML(string=html))

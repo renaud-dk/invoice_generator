@@ -34,8 +34,21 @@ def import_to_db(filename, filetype):
                         .filter(Project.code == row['Project']) \
                         .filter(Presta.date == datetime.strptime(row['Date'], '%d/%m/%Y %H:%M')).first()
 
-                    if presta is not None:
-                        print("Presta on date %s for project %s already exist" % (row['Date'], row['Project']))
+                    if presta is not None and presta.invoice_number is not None:
+                        print("Presta on date %s for project %s already invoiced skipping it" % (row['Date'], row['Project']))
+                    elif presta is not None and presta.invoice_number is None:
+                        print("Presta on date %s for project %s not invoiced updating it" % (row['Date'], row['Project']))
+                        presta.project_id = project.id
+                        presta.description = row['Description']
+
+                        duration = datetime.strptime(row['Duration'], '%H:%M')
+                        presta.duration = timedelta(hours=duration.hour, minutes=duration.minute).seconds
+
+                        presta.date = datetime.strptime(row['Date'], '%d/%m/%Y %H:%M')
+
+                        project.prestas.append(presta)
+                        db.session.add(project)
+                        db.session.add(presta)
                     else:
                         new_presta = Presta()
                         new_presta.project_id = project.id

@@ -52,6 +52,15 @@
                 <span class="form-error">
                     Comment is required
                 </span>
+
+                {{presta.travel_distance.label}}
+                {{presta.travel_distance}}
+                <span class="form-error">
+                    Only numeric value
+                </span>
+
+                {{presta.travel_comment.label}}
+                {{presta.travel_comment}}
             </div>
         </div>
 
@@ -224,6 +233,8 @@
                 $('#project').val(0);
                 $('#prestaid').val(0);
                 $('#comment').val("");
+                $('#travel_distance').val("0");
+                $('#travel_comment').val("");
 
                 document.getElementById('prestaDelete').style.visibility = 'hidden';
                 document.getElementById('prestaSave').innerHTML = 'Save';
@@ -247,6 +258,8 @@
                         $('#comment').val(data.Description);
                         $('#project').val(data.Project);
                         $('#duration').val(data.Duration);
+                        $('#travel_distance').val(data.Travel_Distance);
+                        $('#travel_comment').val(data.Travel_Comment);
                     }
                 });
 
