@@ -6,3 +6,4 @@ from .frmcustomer import CustomerForm
 from .frminvoice import InvoiceForm
 from .frmproject import ProjectForm
 from .frmupload import UploadForm
+from .frmreport import ReportForm

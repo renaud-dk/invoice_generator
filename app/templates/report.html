@@ -1,60 +1,102 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <title>timesheet.html</title>
-    <style type="text/css">
-        table.timesheet {
-            font-family: Helvetica,Arial,sans-serif;
-            border-collapse: collapse;
-            width: 100%;
+{% extends "base.html" %}
+{% block styles %}
+{{super()}}
+    <link href="{{ url_for('static', filename='css/foundation-datepicker.min.css') }}" rel='stylesheet' />
+    <style>
+        div.content {
+            padding: 25px 0px 0px 0px;
         }
-
-        table.timesheet td, table.timesheet th {
-          border: 1px solid #999;
-          padding: 0.5rem;
-          text-align: left;
-          border-bottom: 1px solid #ddd;
-          border-right: 0px;
-          border-left: 0px;
-          border-top: 0px;
-        }
-
-        table.timesheet th {
-            background-color: #333f50;
-            color: white;
-        }
-
-        table.timesheet tr:nth-child(odd) {
-            background-color: white;
-        }
-
-        table.timesheet tr:nth-child(even) {
-            background-color: #eee;
-        }
-
     </style>
-  </head>
-  <body>
-    <table class="timesheet">
-        <thead>
-            <tr>
-              <th>Projet</th>
-              <th>Date</th>
-              <th>Description</th>
-              <th>Presta</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for p in prestas %}
-            <tr>
-                <td>{{p.project}}</td>
-                <td>{{p.date.strftime('%d/%m/%Y')}}</td>
-                <td>{{p.description}}</td>
-                <td>{{p.hours}}</td>
-            </tr>
-            {% endfor %}
-      </tbody>
-    </table>
-  </body>
-</html>
+{% endblock styles %}
+
+{% block content %}
+    <div class="row content">
+        <div class="large-12 columns">
+            <h2>Generate report</h2>
+        </div>
+    </div>
+    <form id="projectform" data-abide novalidate action="" method="post">
+        {{ report.hidden_tag() }}
+        <div class="row">
+            <div class="small-6 columns">
+                {{report.report_type.label}}
+                {{report.report_type}}
+                <span class="form-error">
+                    Report is required
+                </span>
+
+                {{report.date_from.label}}
+                {{report.date_from}}
+                <span class="form-error">
+                    A start date is required
+                </span>
+
+                {{report.date_to.label}}
+                {{report.date_to}}
+                <span class="form-error">
+                    An end date is required
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="large-6 columns">
+                <button class="button" type="submit">Generate Report</button>
+            </div>
+        </div>
+    </form>
+    {% if data %}
+        <hr />
+        <div class="row">
+            <div class="large-12 columns">
+                Total days {{sum_data}}
+            </div>
+            <div class="large-12 columns">
+                <table id="customergrid" class="hover" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data %}
+                            <tr>
+                                <td>{{d.date.strftime('%d/%m/%Y')}}</td>
+                                <td>{{d.description}}</td>
+                                <td>{{d.hours}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}
+
+{% block footer_scripts %}
+{{super()}}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/foundation-datepicker.min.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#date_from').fdatepicker({
+                    format: 'dd/mm/yyyy',
+                    weekStart: 1,
+                    disableDblClickSelection: true,
+                    leftArrow:'<<',
+                    rightArrow:'>>',
+                    pickTime: false
+                });
+
+            $('#date_to').fdatepicker({
+                    format: 'dd/mm/yyyy',
+                    weekStart: 1,
+                    disableDblClickSelection: true,
+                    leftArrow:'<<',
+                    rightArrow:'>>',
+                    pickTime: false
+                });
+        });
+    </script>
+{% endblock footer_scripts %}

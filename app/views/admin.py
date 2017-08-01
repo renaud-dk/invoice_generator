@@ -6,9 +6,9 @@ from datetime import timedelta, datetime
 from flask import render_template, flash, redirect, request
 from flask_weasyprint import HTML, render_pdf
 from werkzeug.utils import secure_filename
-from app import app, db, FILE_TYPE_PST, FILE_TYPE_PRJ, REF_INVOICE_NUMBER
+from app import app, db, FILE_TYPE_PST, FILE_TYPE_PRJ, REF_INVOICE_NUMBER, REPORT_TYPE_HOLIDAYS, REPORT_TYPE_TRAVELS
 from app.models import Customer, Project, Presta, Refvalue
-from app.forms import InvoiceForm, UploadForm
+from app.forms import InvoiceForm, UploadForm, ReportForm
 from app.utils import import_to_db
 
 
@@ -16,15 +16,17 @@ class GenericObject(object):
     pass
 
 
-class upload_file_type(object):
+class select_type(object):
     def __init__(self, identifier, description):
         self.identifier = identifier
         self.description = description
 
 
-upload_file_types = [upload_file_type(FILE_TYPE_PRJ, "Project Export"),
-                     upload_file_type(FILE_TYPE_PST, "Presta Export")]
+upload_file_types = [select_type(FILE_TYPE_PRJ, "Project Export"),
+                     select_type(FILE_TYPE_PST, "Presta Export")]
 
+report_types = [select_type(REPORT_TYPE_HOLIDAYS, "Off days"),
+                select_type(REPORT_TYPE_TRAVELS, "Travels")]
 
 @app.route('/admin/gen_invoice', methods=['GET', 'POST'])
 def gen_invoice():
@@ -91,6 +93,38 @@ def gen_invoice():
         return render_pdf(HTML(string=html))
 
     return render_template('overview.html', invoice=invoicefrm)
+
+@app.route('/admin/gen_report', methods = ['GET', 'POST'])
+def gen_report():
+    reporfrm = ReportForm()
+    reporfrm.report_type.choices = [(r.identifier, r.description) for r in report_types]
+
+    if reporfrm.validate_on_submit():
+        from_date = datetime.strptime(reporfrm.date_from.data, '%d/%m/%Y')
+        to_date = datetime.strptime(reporfrm.date_to.data, '%d/%m/%Y')
+
+        if reporfrm.report_type.data == REPORT_TYPE_HOLIDAYS:
+            off_days = 0
+            lst_presta = []
+            p = Presta.query.join(Project) \
+                .filter(Project.code == 'Off') \
+                .filter(Presta.date >= from_date) \
+                .filter(Presta.date <= (to_date + timedelta(days=1))) \
+                .order_by(Presta.date).all()
+
+            for i in p:
+                presta = GenericObject()
+                presta.date = i.date
+                presta.description = i.description
+                presta.hours = ("%.2f" % (i.duration / 3600.0))
+                lst_presta.append(presta)
+                off_days += i.duration
+
+            off_days = (off_days / 3600.0) / 8.0
+
+            return render_template('report.html', report=reporfrm, type="HOLIDAYS", data=lst_presta, sum_data=off_days)
+
+    return render_template('report.html', report=reporfrm, type=None, data=None, sum_data=None)
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload_file():
