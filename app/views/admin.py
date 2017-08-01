@@ -6,7 +6,7 @@ from datetime import timedelta, datetime
 from flask import render_template, flash, redirect, request
 from flask_weasyprint import HTML, render_pdf
 from werkzeug.utils import secure_filename
-from app import app, db, FILE_TYPE_PST, FILE_TYPE_PRJ, REF_DAILY_RATE, REF_INVOICE_NUMBER
+from app import app, db, FILE_TYPE_PST, FILE_TYPE_PRJ, REF_INVOICE_NUMBER
 from app.models import Customer, Project, Presta, Refvalue
 from app.forms import InvoiceForm, UploadForm
 from app.utils import import_to_db
@@ -48,7 +48,6 @@ def gen_invoice():
         presta_range = GenericObject()
         invoice = GenericObject()
         price = GenericObject()
-        # daily_rate = float(Refvalue.query.filter(Refvalue.refname == REF_DAILY_RATE).first().refvalue)
         daily_rate = float(Customer.query.filter(Customer.id == invoicefrm.customer.data).first().rate)
         work_days = 0
 
