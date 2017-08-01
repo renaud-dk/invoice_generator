@@ -48,7 +48,8 @@ def gen_invoice():
         presta_range = GenericObject()
         invoice = GenericObject()
         price = GenericObject()
-        daily_rate = float(Refvalue.query.filter(Refvalue.refname == REF_DAILY_RATE).first().refvalue)
+        # daily_rate = float(Refvalue.query.filter(Refvalue.refname == REF_DAILY_RATE).first().refvalue)
+        daily_rate = float(Customer.query.filter(Customer.id == invoicefrm.customer.data).first().rate)
         work_days = 0
 
         for i in p:
@@ -67,6 +68,7 @@ def gen_invoice():
         invoice.number = Refvalue.query.filter(Refvalue.refname == REF_INVOICE_NUMBER).first().refvalue
         presta_range.from_date = lst_presta[0].date.strftime('%d/%m/%Y')
         presta_range.to_date = lst_presta[len(lst_presta) - 1].date.strftime('%d/%m/%Y')
+        presta_range.total_days = round(work_days, 2)
         price.htva = round(daily_rate * work_days, 2)
         price.tva = round(price.htva * 0.21, 2)
         price.total = price.htva + price.tva
@@ -75,13 +77,15 @@ def gen_invoice():
 
         if invoicefrm.is_official.data == True:
             invoice_number = Refvalue.query.filter(Refvalue.refname == REF_INVOICE_NUMBER).first()
-            invoice_number.refvalue = str(int(invoice_number.refvalue) + 1)
-            db.session.add(invoice_number)
 
             # udpate prestat with invoice number 
             for i in p:
                 i.invoice_number = invoice_number.refvalue
                 db.session.add(i)
+
+            # increment invoice_number
+            invoice_number.refvalue = str(int(invoice_number.refvalue) + 1)
+            db.session.add(invoice_number)
 
             db.session.commit()
 

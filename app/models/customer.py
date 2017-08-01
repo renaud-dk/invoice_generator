@@ -11,6 +11,7 @@ class Customer(db.Model):
     zip_code = db.Column(db.Integer, nullable = True)
     country = db.Column(db.String(64), nullable = True)
     vat = db.Column(db.String(32))
+    rate = db.Column(db.Integer)
 
     def __repr__(self):
         return '<Customer %r>' % (self.name)
