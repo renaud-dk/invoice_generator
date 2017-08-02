@@ -146,7 +146,7 @@ def gen_report():
 
     return render_template('report.html', report=reporfrm, type=None, data=None, sum_data=None)
 
-@app.route('/upload', methods = ['GET', 'POST'])
+@app.route('/admin/upload', methods = ['GET', 'POST'])
 def upload_file():
     up = UploadForm()
     up.filetype.choices = [(f.identifier, f.description) for f in upload_file_types]
