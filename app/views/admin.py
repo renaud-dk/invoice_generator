@@ -124,6 +124,26 @@ def gen_report():
 
             return render_template('report.html', report=reporfrm, type="HOLIDAYS", data=lst_presta, sum_data=off_days)
 
+        elif reporfrm.report_type.data == REPORT_TYPE_TRAVELS:
+            distance = 0
+            lst_presta = []
+            p = Presta.query.join(Project) \
+                .filter(Presta.travel_distance > 0) \
+                .filter(Presta.date >= from_date) \
+                .filter(Presta.date <= (to_date + timedelta(days=1))) \
+                .order_by(Presta.date).all()
+
+            for i in p:
+                presta = GenericObject()
+                presta.date = i.date
+                presta.description = i.travel_comment
+                presta.distance = i.travel_distance
+                presta.project = i.project.code
+                lst_presta.append(presta)
+                distance += i.travel_distance
+
+            return render_template('report.html', report=reporfrm, type="TRAVELS", data=lst_presta, sum_data=distance)
+
     return render_template('report.html', report=reporfrm, type=None, data=None, sum_data=None)
 
 @app.route('/upload', methods = ['GET', 'POST'])

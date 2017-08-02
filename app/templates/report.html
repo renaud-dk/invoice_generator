@@ -45,33 +45,67 @@
             </div>
         </div>
     </form>
+    <hr />
     {% if data %}
-        <hr />
+        {% if type == "HOLIDAYS" %}
         <div class="row">
             <div class="large-12 columns">
                 Total days {{sum_data}}
             </div>
             <div class="large-12 columns">
-                <table id="customergrid" class="hover" cellspacing="0" width="100%">
+                <table class="hover" cellspacing="0" width="100%">
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Description</th>
                             <th>Hours</th>
+                            <th>Description</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for d in data %}
                             <tr>
                                 <td>{{d.date.strftime('%d/%m/%Y')}}</td>
-                                <td>{{d.description}}</td>
                                 <td>{{d.hours}}</td>
+                                <td>{{d.description}}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+        {% elif type == "TRAVELS" %}
+        <div class="row">
+            <div class="large-12 columns">
+                Total distance {{sum_data}}
+            </div>
+            <div class="large-12 columns">
+                <table class="hover" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Project</th>
+                            <th>Travel distance</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data %}
+                            <tr>
+                                <td>{{d.date.strftime('%d/%m/%Y')}}</td>
+                                <td>{{d.project}}</td>
+                                <td>{{d.distance}}</td>
+                                <td>{{d.description}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="large-12 columns">
+            Unsupported report type
+        </div>
+        {% endif %}
     {% endif %}
 {% endblock content %}
 
