@@ -6,7 +6,8 @@ from datetime import timedelta, datetime
 from flask import render_template, flash, redirect, request
 from flask_weasyprint import HTML, render_pdf
 from werkzeug.utils import secure_filename
-from app import app, db, FILE_TYPE_PST, FILE_TYPE_PRJ, REF_INVOICE_NUMBER, REPORT_TYPE_HOLIDAYS, REPORT_TYPE_TRAVELS
+from app import app, db, FILE_TYPE_PST, FILE_TYPE_PRJ, REF_INVOICE_NUMBER
+from app import REPORT_TYPE_HOLIDAYS, REPORT_TYPE_TRAVELS, REPORT_TYPE_PRESTAS
 from app.models import Customer, Project, Presta, Refvalue
 from app.forms import InvoiceForm, UploadForm, ReportForm
 from app.utils import import_to_db
@@ -26,7 +27,8 @@ upload_file_types = [select_type(FILE_TYPE_PRJ, "Project Export"),
                      select_type(FILE_TYPE_PST, "Presta Export")]
 
 report_types = [select_type(REPORT_TYPE_HOLIDAYS, "Off days"),
-                select_type(REPORT_TYPE_TRAVELS, "Travels")]
+                select_type(REPORT_TYPE_TRAVELS, "Travels"),
+                select_type(REPORT_TYPE_PRESTAS, "Prestas")]
 
 @app.route('/admin/gen_invoice', methods=['GET', 'POST'])
 def gen_invoice():
@@ -103,9 +105,11 @@ def gen_report():
         from_date = datetime.strptime(reporfrm.date_from.data, '%d/%m/%Y')
         to_date = datetime.strptime(reporfrm.date_to.data, '%d/%m/%Y')
 
-        if reporfrm.report_type.data == REPORT_TYPE_HOLIDAYS:
-            off_days = 0
-            lst_presta = []
+        data = []
+        sum_data = 0
+        report_type = reporfrm.report_type.data
+
+        if report_type == REPORT_TYPE_HOLIDAYS:
             p = Presta.query.join(Project) \
                 .filter(Project.code == 'Off') \
                 .filter(Presta.date >= from_date) \
@@ -117,16 +121,12 @@ def gen_report():
                 presta.date = i.date
                 presta.description = i.description
                 presta.hours = ("%.2f" % (i.duration / 3600.0))
-                lst_presta.append(presta)
-                off_days += i.duration
+                data.append(presta)
+                sum_data += i.duration
 
-            off_days = (off_days / 3600.0) / 8.0
+            sum_data = (sum_data / 3600.0) / 8.0
 
-            return render_template('report.html', report=reporfrm, type="HOLIDAYS", data=lst_presta, sum_data=off_days)
-
-        elif reporfrm.report_type.data == REPORT_TYPE_TRAVELS:
-            distance = 0
-            lst_presta = []
+        elif report_type == REPORT_TYPE_TRAVELS:
             p = Presta.query.join(Project) \
                 .filter(Presta.travel_distance > 0) \
                 .filter(Presta.date >= from_date) \
@@ -139,10 +139,31 @@ def gen_report():
                 presta.description = i.travel_comment
                 presta.distance = i.travel_distance
                 presta.project = i.project.code
-                lst_presta.append(presta)
-                distance += i.travel_distance
+                data.append(presta)
+                sum_data += i.travel_distance
 
-            return render_template('report.html', report=reporfrm, type="TRAVELS", data=lst_presta, sum_data=distance)
+        elif report_type == REPORT_TYPE_PRESTAS:
+                p = Presta.query.join(Project) \
+                    .join(Customer) \
+                    .filter(Project.code != 'Off') \
+                    .filter(Presta.date >= from_date) \
+                    .filter(Presta.date <= (to_date + timedelta(days=1))) \
+                    .order_by(Customer.name) \
+                    .order_by(Presta.date).all()
+
+                for i in p:
+                    presta = GenericObject()
+                    presta.customer = i.project.customer.name
+                    presta.project = i.project.code
+                    presta.date = i.date
+                    presta.description = i.description
+                    presta.hours = ("%.2f" % (i.duration / 3600.0))
+                    data.append(presta)
+                    sum_data += i.duration
+
+                sum_data = (sum_data / 3600.0) / 8.0
+
+        return render_template('report.html', report=reporfrm, type=report_type, data=data, sum_data=sum_data)
 
     return render_template('report.html', report=reporfrm, type=None, data=None, sum_data=None)
 

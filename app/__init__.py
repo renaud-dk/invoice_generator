@@ -20,6 +20,7 @@ FILE_TYPE_PST = 2
 
 REPORT_TYPE_HOLIDAYS = 1
 REPORT_TYPE_TRAVELS = 2
+REPORT_TYPE_PRESTAS = 3
 
 # from app import views, models
 from app.views import *
