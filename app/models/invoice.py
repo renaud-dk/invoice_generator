@@ -11,6 +11,7 @@ class Invoice(db.Model):
     work_days = db.Column(db.Float)
     price_htva = db.Column(db.Float)
     price_total = db.Column(db.Float)
+    daily_rate = db.Column(db.Integer)
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable = False)
     customer = db.relationship('Customer', backref=db.backref('invoices', cascade="all, delete-orphan"), lazy='joined')
 
