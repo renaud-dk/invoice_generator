@@ -15,3 +15,5 @@ class CustomerForm(Form):
     country = StringField('Country', render_kw={"placeholder": "Customer Country"})
     vat = StringField('VAT', validators=[DataRequired()],
                       render_kw={"placeholder": "Customer VAT", "required": "true"})
+    rate = IntegerField('Daily rate', validators=[DataRequired()],
+                        render_kw={"class": "input-group-field", "placeholder": "Customer daily rate", "required": "true"})

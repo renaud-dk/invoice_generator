@@ -27,6 +27,7 @@ def new_customer():
         new_customer.zip_code = customer.zip_code.data
         new_customer.country = customer.country.data
         new_customer.vat = customer.vat.data
+        new_customer.rate = customer.rate.data
 
         db.session.add(new_customer)
         db.session.commit()
@@ -48,6 +49,7 @@ def edit_customer(cid):
         cfrm.zip_code.data = cobj.zip_code
         cfrm.country.data = cobj.country
         cfrm.vat.data = cobj.vat
+        cfrm.rate.data = cobj.rate
     else:
         cobj.name = cfrm.name.data
         cobj.address = cfrm.address.data
@@ -55,6 +57,7 @@ def edit_customer(cid):
         cobj.zip_code = cfrm.zip_code.data
         cobj.country = cfrm.country.data
         cobj.vat = cfrm.vat.data
+        cobj.rate = cfrm.rate.data
 
         db.session.commit()
 
