@@ -8,7 +8,7 @@ from flask_weasyprint import HTML, render_pdf
 from werkzeug.utils import secure_filename
 from app import app, db, FILE_TYPE_PST, FILE_TYPE_PRJ, REF_INVOICE_NUMBER
 from app import REPORT_TYPE_HOLIDAYS, REPORT_TYPE_TRAVELS, REPORT_TYPE_PRESTAS
-from app.models import Customer, Project, Presta, Refvalue
+from app.models import Customer, Project, Presta, Refvalue, Invoice
 from app.forms import InvoiceForm, UploadForm, ReportForm
 from app.utils import import_to_db
 
@@ -89,6 +89,17 @@ def gen_invoice():
             # increment invoice_number
             invoice_number.refvalue = str(int(invoice_number.refvalue) + 1)
             db.session.add(invoice_number)
+
+            new_invoice_hist = Invoice()
+            new_invoice_hist.number = invoice.number
+            new_invoice_hist.date = to_date
+            new_invoice_hist.work_days = work_days
+            new_invoice_hist.price_htva = price.htva
+            new_invoice_hist.price_total = price.total
+            new_invoice_hist.daily_rate = daily_rate
+            new_invoice_hist.customer_id = invoicefrm.customer.data
+
+            db.session.add(new_invoice_hist)
 
             db.session.commit()
 
