@@ -1,9 +1,10 @@
 #-*- coding: utf-8 -*-
 __author__ = 'rdk'
 
-__all__ = ['customer', 'project', 'presta', 'refvalue']
+__all__ = ['customer', 'project', 'presta', 'refvalue', 'invoice']
 
 from .customer import Customer
 from .project import Project
 from .presta import Presta
 from .refvalue import Refvalue
+from .invoice import Invoice
