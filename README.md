@@ -4,7 +4,7 @@ Yet another tool to track service delivery.
 As a freelance I was needed a tool to track my service delivery.
 I did not searched for an existing tool and I just jumped forward writing my own.
 
-This is a web application using the folowing components 
+This is a web application written in Python 3.6 using the folowing components 
 - Foundation 6.3 from Zurb.
 - foundation-datetimepicker.
 - Wickedpicker.
