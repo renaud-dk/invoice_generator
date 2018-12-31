@@ -7,7 +7,8 @@ from wtforms.validators import DataRequired
 
 
 class UploadForm(Form):
-    filetype = SelectField('Filetype', coerce=int, validators=[DataRequired()])
+    filetype = SelectField('File type', coerce=int, validators=[DataRequired()])
+    customer = SelectField('Customer', coerce=str, validators=[DataRequired()])
 
     # TODO used FileFiedl instead of StringField
     filename = StringField('Select file', validators=[DataRequired()],

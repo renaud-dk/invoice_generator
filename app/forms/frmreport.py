@@ -7,7 +7,9 @@ from wtforms.validators import DataRequired
 
 
 class ReportForm(Form):
-    report_type = SelectField('Report type', coerce=int, validators=[DataRequired()])
+    report_type = SelectField('Report type', coerce=int, validators=[DataRequired()],
+                              render_kw={"onchange":"showhidecustomer();"})
+    customer = SelectField('Customer', coerce=str)
     date_from = StringField('Date From', validators=[DataRequired()],
                        render_kw={"class": "span2", "placeholder": "Date from", "required": "true"})
     date_to = StringField('Date To', validators=[DataRequired()],

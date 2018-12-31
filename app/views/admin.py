@@ -111,6 +111,9 @@ def gen_invoice():
 def gen_report():
     reporfrm = ReportForm()
     reporfrm.report_type.choices = [(r.identifier, r.description) for r in report_types]
+    customers = Customer.query.all()
+    reporfrm.customer.choices = [("%", "All")]
+    reporfrm.customer.choices.extend([(c.name, c.name) for c in customers])
 
     if reporfrm.validate_on_submit():
         from_date = datetime.strptime(reporfrm.date_from.data, '%d/%m/%Y')
@@ -119,6 +122,7 @@ def gen_report():
         data = []
         sum_data = 0
         report_type = reporfrm.report_type.data
+        customer = reporfrm.customer.data
 
         if report_type == REPORT_TYPE_HOLIDAYS:
             p = Presta.query.join(Project) \
@@ -157,6 +161,7 @@ def gen_report():
                 p = Presta.query.join(Project) \
                     .join(Customer) \
                     .filter(Project.code != 'Off') \
+                    .filter(Customer.name.like(customer)) \
                     .filter(Presta.date >= from_date) \
                     .filter(Presta.date <= (to_date + timedelta(days=1))) \
                     .order_by(Customer.name) \
@@ -182,6 +187,7 @@ def gen_report():
 def upload_file():
     up = UploadForm()
     up.filetype.choices = [(f.identifier, f.description) for f in upload_file_types]
+    up.customer.choices = [(c.name, c.name) for c in Customer.query.all()]
 
     if request.method == 'POST':
         # check if the post request has the file part

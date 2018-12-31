@@ -25,6 +25,11 @@
                     Report is required
                 </span>
 
+                <div id="customer_search" style="display: none">
+                    {{report.customer.label}}
+                    {{report.customer}}
+                </div>
+
                 {{report.date_from.label}}
                 {{report.date_from}}
                 <span class="form-error">
@@ -161,6 +166,18 @@
                     rightArrow:'>>',
                     pickTime: false
                 });
+            showhidecustomer();
         });
+        function showhidecustomer() {
+            var rep_type = document.getElementById("report_type").value;
+            var cust_div = document.getElementById("customer_search");
+
+            if (rep_type === "3") {
+                cust_div.style.display = "block";
+            }
+            else {
+                cust_div.style.display = "none";
+            }
+        }
     </script>
 {% endblock footer_scripts %}

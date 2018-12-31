@@ -12,6 +12,7 @@ class Customer(db.Model):
     country = db.Column(db.String(64), nullable = True)
     vat = db.Column(db.String(32))
     rate = db.Column(db.Integer)
+    presta_import_fmt = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
         return '<Customer %r>' % (self.name)

@@ -66,3 +66,6 @@ def import_to_db(filename, filetype):
             return
 
     db.session.commit()
+
+
+
