@@ -6,9 +6,9 @@ from datetime import timedelta, datetime
 from flask import render_template, flash, redirect, request
 from flask_weasyprint import HTML, render_pdf
 from werkzeug.utils import secure_filename
-from app import app, db, FILE_TYPE_PST, FILE_TYPE_PRJ, REF_INVOICE_NUMBER
+from app import app, db, FILE_TYPE_PST, FILE_TYPE_PRJ, REF_INVOICE_NUMBER, REF_BANK_ACCOUNT, REF_BANK_SWIFT
 from app import REPORT_TYPE_HOLIDAYS, REPORT_TYPE_TRAVELS, REPORT_TYPE_PRESTAS
-from app.models import Customer, Project, Presta, Refvalue, Invoice
+from app.models import Customer, Project, Presta, Refvalue, Invoice, Notification
 from app.forms import InvoiceForm, UploadForm, ReportForm
 from app.utils import import_to_db
 
@@ -75,8 +75,25 @@ def gen_invoice():
         price.htva = round(daily_rate * work_days, 2)
         price.tva = round(price.htva * 0.21, 2)
         price.total = price.htva + price.tva
+
+        dt = datetime.now()
+
+        notif = Notification.query \
+            .filter(dt >= Notification.date_from) \
+            .filter(dt <= Notification.date_to).first()
+
+        if notif is not None:
+            notification = GenericObject()
+            notification.text = notif.notification
+        else:
+            notification = None
+
+        bank = GenericObject()
+        bank.account = Refvalue.query.filter(Refvalue.refname == REF_BANK_ACCOUNT).first().refvalue
+        bank.swift = Refvalue.query.filter(Refvalue.refname == REF_BANK_SWIFT).first().refvalue
+
         html = render_template('timesheet.html', customer=customer, invoice=invoice, presta_range=presta_range,
-                               prestas=lst_presta, price=price)
+                               prestas=lst_presta, price=price, notification=notification, bank=bank)
 
         if invoicefrm.is_official.data == True:
             invoice_number = Refvalue.query.filter(Refvalue.refname == REF_INVOICE_NUMBER).first()
