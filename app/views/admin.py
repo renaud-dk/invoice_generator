@@ -115,6 +115,9 @@ def gen_invoice():
             new_invoice_hist.price_total = price.total
             new_invoice_hist.daily_rate = daily_rate
             new_invoice_hist.customer_id = invoicefrm.customer.data
+            new_invoice_hist.notification_id = notif.id
+            new_invoice_hist.bank_account = bank.account
+            new_invoice_hist.bank_swift = bank.swift
 
             db.session.add(new_invoice_hist)
 

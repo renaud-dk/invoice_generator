@@ -25,6 +25,8 @@ def get_invoice(iid):
     presta_range = GenericObject()
     invoice_data = GenericObject()
     price = GenericObject()
+    notification = GenericObject()
+    bank = GenericObject()
 
     for i in p:
         presta = GenericObject()
@@ -37,6 +39,14 @@ def get_invoice(iid):
 
     invoice_data.date = invoice.date.strftime('%d/%m/%Y')
     invoice_data.number = invoice.number
+    bank.account = invoice.bank_account
+    bank.swift = invoice.bank_swift
+
+    if invoice.notification is not None:
+        notification.text = invoice.notification.notification
+    else:
+        notification = None
+
     presta_range.from_date = lst_presta[0].date.strftime('%d/%m/%Y')
     presta_range.to_date = lst_presta[len(lst_presta) - 1].date.strftime('%d/%m/%Y')
     presta_range.total_days = round(invoice.work_days, 2)
@@ -46,6 +56,6 @@ def get_invoice(iid):
     price.total = round(invoice.price_total, 2)
 
     html = render_template('timesheet.html', customer=invoice.customer, invoice=invoice_data, presta_range=presta_range,
-                           prestas=lst_presta, price=price)
+                           prestas=lst_presta, price=price, notification=notification, bank=bank)
 
     return render_pdf(HTML(string=html))
