@@ -30,6 +30,9 @@ class BadTokenError(Exception):
 class ExpiredTokenError(Exception):
     pass
 
+class NotFound(Exception):
+    pass
+
 
 errors = {
     "InternalServerError": {
@@ -71,5 +74,9 @@ errors = {
      "ExpiredTokenError": {
          "message": "Token as expired",
          "status": 401
+     },
+     "NotFound": {
+         "message": "Resource not found",
+         "status": 404
      }
 }
