@@ -20,18 +20,18 @@ from api.resources.errors import EmailAlreadyExistsError, \
 
 def json_converter(o):
     if isinstance(o, datetime.datetime):
-        return o.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+        return o.strftime('%Y-%m-%dT%H:%M:%S') + 'Z'
 
-begin_of_all = '1970-01-01T00:00:00.000Z'
-end_of_all = '3000-01-01T00:00:00.000Z'
+begin_of_all = '1970-01-01T00:00:00Z'
+end_of_all = '3000-01-01T00:00:00Z'
 
 class PrestasApi(Resource):
     @jwt_required
     def get(self):
         try:
             user_id = get_jwt_identity()
-            start = datetime.datetime.strptime(request.args.get('start', begin_of_all),'%Y-%m-%dT%H:%M:%S.%fZ') 
-            end = datetime.datetime.strptime(request.args.get('end', end_of_all),'%Y-%m-%dT%H:%M:%S.%fZ') 
+            start = datetime.datetime.strptime(request.args.get('start', begin_of_all),'%Y-%m-%dT%H:%M:%SZ') 
+            end = datetime.datetime.strptime(request.args.get('end', end_of_all),'%Y-%m-%dT%H:%M:%SZ') 
 
             print(f"start : {start} - {type(start)}")
             print(f"end : {end} - {type(end)}")
@@ -50,7 +50,9 @@ class PrestasApi(Resource):
             for p in prst:
                 prestas.append(p.as_dict())
             
-            return Response(json.dumps(prestas, default=json_converter), mimetype="application/json", status=200)
+            rep = Response(json.dumps(prestas, default=json_converter), mimetype="application/json", status=200)
+            rep.headers ['Access-Control-Allow-Origin'] = '*'
+            return rep
         except NoAuthorizationError:
             raise UnauthorizedError
         except NotFound:
