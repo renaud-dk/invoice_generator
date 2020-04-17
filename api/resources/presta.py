@@ -22,18 +22,27 @@ def json_converter(o):
     if isinstance(o, datetime.datetime):
         return o.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
 
+begin_of_all = '1970-01-01T00:00:00.000Z'
+end_of_all = '3000-01-01T00:00:00.000Z'
+
 class PrestasApi(Resource):
     @jwt_required
     def get(self):
         try:
             user_id = get_jwt_identity()
+            start = datetime.datetime.strptime(request.args.get('start', begin_of_all),'%Y-%m-%dT%H:%M:%S.%fZ') 
+            end = datetime.datetime.strptime(request.args.get('end', end_of_all),'%Y-%m-%dT%H:%M:%S.%fZ') 
+
+            print(f"start : {start} - {type(start)}")
+            print(f"end : {end} - {type(end)}")
             
             prestas = []
             prst = Presta.query \
                     .join(Project) \
                     .join(Customer) \
                     .join(User) \
-                    .filter(User.id == user_id).all()
+                    .filter(User.id == user_id) \
+                    .filter(Presta.date >= start, Presta.date <= end).all()
 
             if prst is None:
                 raise NotFound
