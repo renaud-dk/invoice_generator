@@ -51,7 +51,6 @@ class PrestasApi(Resource):
                 prestas.append(p.as_dict())
             
             rep = Response(json.dumps(prestas, default=json_converter), mimetype="application/json", status=200)
-            rep.headers ['Access-Control-Allow-Origin'] = '*'
             return rep
         except NoAuthorizationError:
             raise UnauthorizedError
