@@ -32,9 +32,6 @@ class PrestasApi(Resource):
             user_id = get_jwt_identity()
             start = datetime.datetime.strptime(request.args.get('start', begin_of_all),'%Y-%m-%dT%H:%M:%SZ') 
             end = datetime.datetime.strptime(request.args.get('end', end_of_all),'%Y-%m-%dT%H:%M:%SZ') 
-
-            print(f"start : {start} - {type(start)}")
-            print(f"end : {end} - {type(end)}")
             
             prestas = []
             prst = Presta.query \
