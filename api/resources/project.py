@@ -3,28 +3,27 @@
 import datetime
 import json
 
-from flask import request, Response
+from flask import request, Response, jsonify
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended.exceptions import NoAuthorizationError
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError
+
 
 from api.app import db
 from api.database.user import User
 from api.database.customer import Customer
 from api.database.project import Project
-from api.resources.errors import EmailAlreadyExistsError, \
-    UnauthorizedError, InternalServerError, NotFound
+from api.resources.errors import UnauthorizedError, InternalServerError, NotFound
+from api.schema import project_schema
 
 
 class ProjectsApi(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self):
         try:
             user_id = get_jwt_identity()
+            user_id = 1
             
-            projects = []
             prj = Project.query \
                     .join(Customer) \
                     .join(User) \
@@ -33,10 +32,7 @@ class ProjectsApi(Resource):
             if prj is None:
                 raise NotFound
 
-            for p in prj:
-                projects.append(p.as_dict())
-            
-            return Response(json.dumps(projects), mimetype="application/json", status=200)
+            return jsonify(project_schema.dump(prj, many=True))
         except NoAuthorizationError:
             raise UnauthorizedError
         except NotFound:
@@ -46,7 +42,7 @@ class ProjectsApi(Resource):
 
 
 class ProjectsCustomerApi(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, cust_id):
         try:
             user_id = get_jwt_identity()
@@ -70,7 +66,7 @@ class ProjectsCustomerApi(Resource):
         except Exception as e:
             raise InternalServerError
 
-    @jwt_required
+    @jwt_required()
     def post(self, cust_id):
         try:
             user_id = get_jwt_identity()
@@ -96,7 +92,7 @@ class ProjectsCustomerApi(Resource):
 
 
 class ProjectCustomerApi(Resource):    
-    @jwt_required
+    @jwt_required()
     def get(self, cust_id, prj_id):
         try:
             user_id = get_jwt_identity()
@@ -117,7 +113,7 @@ class ProjectCustomerApi(Resource):
         except Exception as e:
             raise InternalServerError
 
-    @jwt_required
+    @jwt_required()
     def put(self, cust_id, prj_id):
         try:
             user_id = get_jwt_identity()
@@ -144,7 +140,7 @@ class ProjectCustomerApi(Resource):
         except Exception as e:
             raise InternalServerError
 
-    @jwt_required
+    @jwt_required()
     def delete(self, cust_id, prj_id):
         try:
             user_id = get_jwt_identity()

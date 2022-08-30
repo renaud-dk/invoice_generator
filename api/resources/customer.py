@@ -18,7 +18,7 @@ from api.resources.errors import EmailAlreadyExistsError, \
 
 
 class CustomersApi(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self):
         try:
             user_id = get_jwt_identity()
@@ -37,7 +37,7 @@ class CustomersApi(Resource):
         except Exception as e:
             raise InternalServerError
 
-    @jwt_required
+    @jwt_required()
     def post(self):
         try:
             body = request.get_json()
@@ -58,7 +58,7 @@ class CustomersApi(Resource):
 
 
 class CustomerApi(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, id):
         try:
             user_id = get_jwt_identity()
