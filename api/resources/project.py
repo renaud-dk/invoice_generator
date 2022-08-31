@@ -22,7 +22,6 @@ class ProjectsApi(Resource):
     def get(self):
         try:
             user_id = get_jwt_identity()
-            user_id = 1
             
             prj = Project.query \
                     .join(Customer) \
