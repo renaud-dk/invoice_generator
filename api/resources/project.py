@@ -39,6 +39,30 @@ class ProjectsApi(Resource):
         except Exception as e:
             raise InternalServerError
 
+class ProjectApi(Resource):
+    @jwt_required()
+    def get(self, id):
+        try:
+            user_id = get_jwt_identity()
+
+            prj = Project.query \
+                        .join(Customer) \
+                        .join(User) \
+                        .filter(User.id == user_id) \
+                        .filter(Project.id == id).first()
+
+            if prj is None:
+                raise NotFound
+
+            return jsonify(project_schema.dump(prj))
+
+        except NoAuthorizationError:
+            raise UnauthorizedError
+        except NotFound:
+            raise NotFound
+        except Exception as e:
+            raise InternalServerError   
+
 
 class ProjectsCustomerApi(Resource):
     @jwt_required()

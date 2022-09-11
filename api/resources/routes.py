@@ -2,7 +2,7 @@
 
 from .auth import SignupApi, LoginApi
 from .customer import CustomersApi, CustomerApi
-from .project import ProjectsApi, ProjectsCustomerApi, ProjectCustomerApi
+from .project import ProjectsApi, ProjectApi, ProjectsCustomerApi, ProjectCustomerApi
 from .presta import PrestasApi, PrestasProjectApi, PrestaProjectApi
 
 def initialize_routes(api):
@@ -11,6 +11,7 @@ def initialize_routes(api):
     api.add_resource(CustomersApi, '/api/v1/customers')
     api.add_resource(CustomerApi, '/api/v1/customers/<id>')
     api.add_resource(ProjectsApi, '/api/v1/projects')
+    api.add_resource(ProjectApi, '/api/v1/projects/<id>')
     api.add_resource(ProjectsCustomerApi, '/api/v1/customers/<cust_id>/projects')
     api.add_resource(ProjectCustomerApi, '/api/v1/customers/<cust_id>/projects/<prj_id>')
     api.add_resource(PrestasApi, '/api/v1/prestas')
