@@ -63,6 +63,35 @@ class ProjectApi(Resource):
         except Exception as e:
             raise InternalServerError   
 
+    @jwt_required()
+    def put(self, id):
+        try:
+            user_id = get_jwt_identity()
+            body = request.get_json()
+
+            prj = Project.query \
+                        .join(Customer) \
+                        .join(User) \
+                        .filter(User.id == user_id) \
+                        .filter(Project.id == id).first()
+
+            if prj is None:
+                raise NotFound
+
+            for key, value in body.items():
+                setattr(prj, key, value)
+
+            db.session.commit()
+
+            return None, 200
+
+        except NoAuthorizationError:
+            raise UnauthorizedError
+        except NotFound:
+            raise NotFound
+        except Exception as e:
+            raise InternalServerError
+
 
 class ProjectsCustomerApi(Resource):
     @jwt_required()
