@@ -39,6 +39,23 @@ class ProjectsApi(Resource):
         except Exception as e:
             raise InternalServerError
 
+    @jwt_required()
+    def post (self):
+        try:
+            body = request.get_json()
+            
+            prj = Project(**body)
+            db.session.add(prj)
+            db.session.commit()
+            return None, 200
+        except NoAuthorizationError:
+            raise UnauthorizedError
+        except Exception as e:
+            raise InternalServerError
+        finally:
+            db.session.rollback()
+
+
 class ProjectApi(Resource):
     @jwt_required()
     def get(self, id):
