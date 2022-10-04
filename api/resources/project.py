@@ -53,7 +53,7 @@ class ProjectsApi(Resource):
         except Exception as e:
             raise InternalServerError
         finally:
-            db.session.rollback()
+            db.session.rollback() 
 
 
 class ProjectApi(Resource):
@@ -108,6 +108,20 @@ class ProjectApi(Resource):
             raise NotFound
         except Exception as e:
             raise InternalServerError
+
+    @jwt_required()
+    def delete(self, id):
+        try:
+            prj = Project.query.get(id)
+            db.session.delete(prj)
+            db.session.commit()
+            return None, 200
+        except NoAuthorizationError:
+            raise UnauthorizedError
+        except Exception as e:
+            raise InternalServerError
+        finally:
+            db.session.rollback()   
 
 
 class ProjectsCustomerApi(Resource):
